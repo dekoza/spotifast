@@ -1,0 +1,14 @@
+{
+  "_output_dir": "/home/minder/projekty/atlas",
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Dominik Kozaczko",
+  "copyright_year": "2022",
+  "development_status": "Development Status :: 3 - Alpha",
+  "email": "dominik@kozaczko.info",
+  "friendly_name": "Coding Challenge",
+  "github_user": "dekoza",
+  "license": "GPL-3.0",
+  "package_name": "coding_challenge",
+  "project_name": "coding_challenge",
+  "version": "0.0.0"
+}
