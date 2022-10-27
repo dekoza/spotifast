@@ -1,12 +1,18 @@
+from pathlib import Path
+
+import anyio
 import httpx
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from tortoise.contrib.fastapi import HTTPNotFoundError
 
 from . import const
-from .models import Artist, ArtistP, ArtistResponse
-from .utils import get_auth_headers, get_auth_token, prep_artist_defaults
+from .models import Artist, ArtistFetch, ArtistP, ArtistResponse
+from .utils import get_auth_headers, prep_artist_defaults
+
+CURRENT_DIR = Path(__file__).parent
 
 load_dotenv()
 router = APIRouter()
@@ -19,8 +25,9 @@ class Status(BaseModel):
 @router.get("/")
 async def main_page():
     # show basic interface
-    artists = await Artist.all()
-    return await get_auth_token()
+    afile = await anyio.open_file(CURRENT_DIR / "templates/base.html")
+    output = await afile.read()
+    return HTMLResponse(content=output)
 
 
 @router.get("/artists/", response_model=list[ArtistP])
@@ -39,13 +46,16 @@ async def create_artist(artist: ArtistP) -> ArtistP:
     response_model=ArtistP,
     responses={404: {"model": HTTPNotFoundError}},
 )
-async def fetch_artist(spotify_id: str):
+async def fetch_artist(artist: ArtistFetch):
+    spotify_id = artist.spotify_id
     client = httpx.AsyncClient()
-    url = f"{const.ARTISTS_URL}/{spotify_id}"
+    url = f"{const.ARTISTS_URL}{spotify_id}"
     headers = await get_auth_headers()
     result = await client.get(url=url, headers=headers)
     if result.status_code != 200:
-        raise HTTPException(status_code=404, detail=f"Artist {spotify_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Artist {spotify_id} not found .\n{result.content}"
+        )
     data = result.json()
     defaults = prep_artist_defaults(data)
     artist, created = await Artist.get_or_create(

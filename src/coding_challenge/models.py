@@ -16,14 +16,18 @@ class AuthData(models.Model):
 class Artist(models.Model):
     name = fields.CharField(max_length=100)
     spotify_id = fields.CharField(max_length=32, index=True)
-    followers = fields.SmallIntField(default=0)
-    popularity = fields.SmallIntField(default=0)
-    genres = fields.CharField(max_length=256)
-    image_url = fields.CharField(max_length=256)
+    followers = fields.IntField(default=0)
+    popularity = fields.IntField(default=0)
+    genres = fields.CharField(max_length=256, default="")
+    image_url = fields.CharField(max_length=256, default="")
     locked = fields.BooleanField(default=False)
 
 
 ArtistP = pydantic_model_creator(Artist)
+
+
+class ArtistFetch(pydantic.BaseModel):
+    spotify_id: str
 
 
 class ArtistResponseItem(pydantic.BaseModel):

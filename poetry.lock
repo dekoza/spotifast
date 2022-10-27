@@ -582,7 +582,7 @@ testing = ["Django (<3.1)", "colorama", "docopt", "pytest (<7.0.0)"]
 name = "jinja2"
 version = "3.1.2"
 description = "A very fast and expressive template engine."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -629,7 +629,7 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 name = "markupsafe"
 version = "2.1.1"
 description = "Safely add untrusted strings to HTML/XML markup."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -1632,7 +1632,7 @@ tests-strict = ["cmake (==3.21.2)", "codecov (==2.0.15)", "ninja (==1.10.2)", "p
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "3799e6f52d9903e5b0bdba7db20a0db85378baf6ba2a727c8e409ddd2176a1ce"
+content-hash = "2a84fca94637784ccf73d4c74872ab770d14a977b6e469057c969e7744fcaccd"
 
 [metadata.files]
 aiosqlite = [

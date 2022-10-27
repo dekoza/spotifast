@@ -1,23 +1,8 @@
-# Coding Challenge
-
-[![PyPI](https://img.shields.io/pypi/v/coding_challenge.svg)][pypi_]
-[![Status](https://img.shields.io/pypi/status/coding_challenge.svg)][status]
-[![Python Version](https://img.shields.io/pypi/pyversions/coding_challenge)][python version]
-[![License](https://img.shields.io/pypi/l/coding_challenge)][license]
-
-[![Read the documentation at https://coding_challenge.readthedocs.io/](https://img.shields.io/readthedocs/coding_challenge/latest.svg?label=Read%20the%20Docs)][read the docs]
-[![Tests](https://github.com/dekoza/coding_challenge/workflows/Tests/badge.svg)][tests]
-[![Codecov](https://codecov.io/gh/dekoza/coding_challenge/branch/main/graph/badge.svg)][codecov]
+# SpotiFast
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)][pre-commit]
 [![Black](https://img.shields.io/badge/code%20style-black-000000.svg)][black]
 
-[pypi_]: https://pypi.org/project/coding_challenge/
-[status]: https://pypi.org/project/coding_challenge/
-[python version]: https://pypi.org/project/coding_challenge
-[read the docs]: https://coding_challenge.readthedocs.io/
-[tests]: https://github.com/dekoza/coding_challenge/actions?workflow=Tests
-[codecov]: https://app.codecov.io/gh/dekoza/coding_challenge
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
@@ -29,17 +14,6 @@
 
 - TODO
 
-## Installation
-
-You can install _Coding Challenge_ via [pip] from [PyPI]:
-
-```console
-$ pip install coding_challenge
-```
-
-## Usage
-
-Please see the [Command-line Reference] for details.
 
 ## Contributing
 
@@ -49,7 +23,7 @@ To learn more, see the [Contributor Guide].
 ## License
 
 Distributed under the terms of the [GPL 3.0 license][license],
-_Coding Challenge_ is free and open source software.
+_SpotiFast_ is free and open source software.
 
 ## Issues
 
