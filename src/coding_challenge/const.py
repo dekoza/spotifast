@@ -1,0 +1,5 @@
+AUTH_URL = "https://accounts.spotify.com/authorize"
+BASE_URL = "https://api.spotify.com/v1/"
+SEARCH_URL = "https://api.spotify.com/v1/search"
+TOKEN_URL = "https://accounts.spotify.com/api/token"
+ARTISTS_URL = "https://api.spotify.com/v1/artists/"

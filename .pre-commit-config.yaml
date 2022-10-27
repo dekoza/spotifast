@@ -60,4 +60,4 @@ repos:
         language: python
         types_or: [ python ]
         pass_filenames: true
-        args: [ --fix ]
+        args: [ -fq ]

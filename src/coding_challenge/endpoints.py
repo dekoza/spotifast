@@ -1,14 +1,12 @@
-import base64
-
 import httpx
-import pendulum
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from tortoise.contrib.fastapi import HTTPNotFoundError
 
-from . import settings
-from .models import Artist, ArtistP, AuthData
+from . import const
+from .models import Artist, ArtistP, ArtistResponse
+from .utils import get_auth_headers, get_auth_token, prep_artist_defaults
 
 load_dotenv()
 router = APIRouter()
@@ -18,42 +16,9 @@ class Status(BaseModel):
     message: str
 
 
-def get_spotify_headers():
-    credentials = base64.b64encode(
-        f"{settings.SPOTIFY_ID}:{settings.SPOTIFY_SECRET}".encode("ascii")
-    )
-    return {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": f"Basic {credentials.decode()}",
-    }
-
-
-async def fetch_token():
-    client = httpx.AsyncClient()
-    data = {"grant_type": "client_credentials"}
-    headers = get_spotify_headers()
-    response = await client.post(url=settings.TOKEN_URL, data=data, headers=headers)
-    return response.json()
-
-
-async def get_auth_token():
-    auth_data = await AuthData.first()
-    if not auth_data or auth_data.is_expired():
-        token_data = await fetch_token()
-        expires = pendulum.now("UTC").add(seconds=token_data["expires_in"])
-        if auth_data:
-            auth_data.token = token_data["access_token"]
-            auth_data.expires = expires
-            await auth_data.save()
-        else:
-            auth_data = await AuthData.create(
-                token=token_data["access_token"], expires=expires
-            )
-    return auth_data.token
-
-
 @router.get("/")
 async def main_page():
+    # show basic interface
     artists = await Artist.all()
     return await get_auth_token()
 
@@ -67,6 +32,39 @@ async def list_artists() -> list[ArtistP]:
 async def create_artist(artist: ArtistP) -> ArtistP:
     artist_obj = await Artist.create(**artist.dict(exclude_unset=True))
     return await ArtistP.from_tortoise_orm(artist_obj)
+
+
+@router.post(
+    "/artists/fetch/",
+    response_model=ArtistP,
+    responses={404: {"model": HTTPNotFoundError}},
+)
+async def fetch_artist(spotify_id: str):
+    client = httpx.AsyncClient()
+    url = f"{const.ARTISTS_URL}/{spotify_id}"
+    headers = await get_auth_headers()
+    result = await client.get(url=url, headers=headers)
+    if result.status_code != 200:
+        raise HTTPException(status_code=404, detail=f"Artist {spotify_id} not found")
+    data = result.json()
+    defaults = prep_artist_defaults(data)
+    artist, created = await Artist.get_or_create(
+        spotify_id=spotify_id, defaults=defaults
+    )
+    if not created:
+        for k, v in defaults.items():
+            setattr(artist, k, v)
+        await artist.save()
+    return await ArtistP.from_queryset_single(Artist.get(spotify_id=spotify_id))
+
+
+@router.get("/artists/spotisearch/", response_model=ArtistResponse)
+async def spotisearch(query: str, offset: int = 0, limit: int = 10):
+    client = httpx.AsyncClient()
+    headers = await get_auth_headers()
+    params = {"q": query, "type": "artist", "offset": offset, "limit": limit}
+    result = await client.get(url=const.SEARCH_URL, params=params, headers=headers)
+    return result.json().get("artists")
 
 
 @router.get(

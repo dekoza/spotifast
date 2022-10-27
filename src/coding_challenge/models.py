@@ -1,4 +1,5 @@
 import pendulum
+import pydantic
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
 
@@ -14,7 +15,7 @@ class AuthData(models.Model):
 
 class Artist(models.Model):
     name = fields.CharField(max_length=100)
-    spotify_uri = fields.CharField(max_length=100, index=True)
+    spotify_id = fields.CharField(max_length=32, index=True)
     followers = fields.SmallIntField(default=0)
     popularity = fields.SmallIntField(default=0)
     genres = fields.CharField(max_length=256)
@@ -23,3 +24,26 @@ class Artist(models.Model):
 
 
 ArtistP = pydantic_model_creator(Artist)
+
+
+class ArtistResponseItem(pydantic.BaseModel):
+    external_urls: dict
+    followers: dict
+    genres: list[str]
+    href: str
+    id: str
+    images: list[dict]
+    name: str
+    popularity: int
+    type: str
+    uri: str
+
+
+class ArtistResponse(pydantic.BaseModel):
+    href: str
+    items: list[ArtistResponseItem]
+    limit: int
+    offset: int
+    next: str | None
+    previous: str | None
+    total: int
