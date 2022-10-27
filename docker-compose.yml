@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+  web:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/spotifast
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres

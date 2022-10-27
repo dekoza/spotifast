@@ -32,11 +32,17 @@ async def main_page():
 
 @router.get("/artists/", response_model=list[ArtistP])
 async def list_artists() -> list[ArtistP]:
+    """
+    List artists saved in database.
+    """
     return await ArtistP.from_queryset(Artist.all())
 
 
 @router.post("/artists/", response_model=ArtistP)
 async def create_artist(artist: ArtistP) -> ArtistP:
+    """
+    Create new Artist entry in database.
+    """
     artist_obj = await Artist.create(**artist.dict(exclude_unset=True))
     return await ArtistP.from_tortoise_orm(artist_obj)
 
@@ -47,6 +53,9 @@ async def create_artist(artist: ArtistP) -> ArtistP:
     responses={404: {"model": HTTPNotFoundError}},
 )
 async def fetch_artist(artist: ArtistFetch):
+    """
+    Fetch Artist data from Spotify. You can take the spotify_id from Search.
+    """
     spotify_id = artist.spotify_id
     client = httpx.AsyncClient()
     url = f"{const.ARTISTS_URL}{spotify_id}"
@@ -70,6 +79,9 @@ async def fetch_artist(artist: ArtistFetch):
 
 @router.get("/artists/spotisearch/", response_model=ArtistResponse)
 async def spotisearch(query: str, offset: int = 0, limit: int = 10):
+    """
+    Search Artists on Spotify.
+    """
     client = httpx.AsyncClient()
     headers = await get_auth_headers()
     params = {"q": query, "type": "artist", "offset": offset, "limit": limit}
@@ -82,7 +94,7 @@ async def spotisearch(query: str, offset: int = 0, limit: int = 10):
     response_model=ArtistP,
     responses={404: {"model": HTTPNotFoundError}},
 )
-async def get_artist(artist_id: int):
+async def artist_detail(artist_id: int):
     return await ArtistP.from_queryset_single(Artist.get(id=artist_id))
 
 

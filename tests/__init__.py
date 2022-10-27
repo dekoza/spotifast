@@ -1,1 +1,1 @@
-"""Test suite for the coding_challenge package."""
+"""Test suite for the spotifast package."""

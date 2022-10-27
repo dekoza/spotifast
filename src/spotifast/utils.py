@@ -3,8 +3,8 @@ import base64
 import httpx
 import pendulum
 
-from coding_challenge import const, settings
-from coding_challenge.models import AuthData
+from spotifast import const, settings
+from spotifast.models import AuthData
 
 
 def get_login_headers():
@@ -27,6 +27,7 @@ async def fetch_token():
     data = {"grant_type": "client_credentials"}
     headers = get_login_headers()
     response = await client.post(url=const.TOKEN_URL, data=data, headers=headers)
+    assert response.status_code == 200, f"Bad ID {settings.SPOTIFY_ID}"
     return response.json()
 
 

@@ -11,7 +11,7 @@ app.include_router(router)
 register_tortoise(
     app,
     db_url=settings.DATABASE_URL,
-    modules={"models": ["coding_challenge.models"]},
+    modules={"models": ["spotifast.models"]},
     generate_schemas=True,
     add_exception_handlers=True,
 )

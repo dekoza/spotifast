@@ -22,12 +22,11 @@ hypercorn = {version = "^0.14.3", extras = ["trio", "uvloop"]}
 anyio = "^3.6.2"
 
 #[tool.poetry.scripts]
-#coding_challenge = "coding_challenge.__main__:main"
+#spotifast = "spotifast.__main__:main"
 typer = "^0.6.1"
 tortoise-orm = {version = "^0.19.2", extras = ["accel", "asyncpg"]}
 httpx = "^0.23.0"
 python-dotenv = "^0.21.0"
-spotipy = "^2.20.0"
 pendulum = "^2.1.2"
 jinja2 = "^3.1.2"
 

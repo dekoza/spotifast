@@ -2,7 +2,7 @@
 import pytest
 from click.testing import CliRunner
 
-from coding_challenge import __main__
+from spotifast import __main__
 
 
 @pytest.fixture

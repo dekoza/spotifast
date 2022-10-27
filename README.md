@@ -6,19 +6,20 @@
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
-## Features
+## Running
 
-- TODO
+Fetch repository:
 
-## Requirements
+> git clone https://github.com/dekoza/spotifast
 
-- TODO
+Edit `.env` file; The structure is defined in `.env.template`
 
+Run using `docker-compose`:
 
-## Contributing
+> docker-compose up --build
 
-Contributions are very welcome.
-To learn more, see the [Contributor Guide].
+Open browser and go to http://localhost:8000/docs for interactive API docs.
+
 
 ## License
 
