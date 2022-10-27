@@ -18,7 +18,7 @@ Run using `docker-compose`:
 
 > docker-compose up --build
 
-Open browser and go to http://localhost:8000/docs for interactive API docs.
+Open browser and go to http://localhost:8000/ to populate the database.
 
 
 ## License

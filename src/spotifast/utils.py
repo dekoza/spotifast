@@ -2,9 +2,10 @@ import base64
 
 import httpx
 import pendulum
+from fastapi import HTTPException
 
 from spotifast import const, settings
-from spotifast.models import AuthData
+from spotifast.models import Artist, AuthData
 
 
 def get_login_headers():
@@ -55,3 +56,24 @@ def prep_artist_defaults(data) -> dict:
         "genres": ", ".join(data["genres"]),
     }
     return results
+
+
+async def fetch_artist_data_from_spotify(spotify_id):
+    client = httpx.AsyncClient()
+    url = f"{const.ARTISTS_URL}{spotify_id}"
+    headers = await get_auth_headers()
+    result = await client.get(url=url, headers=headers)
+    if result.status_code != 200:
+        raise HTTPException(
+            status_code=404, detail=f"Artist {spotify_id} not found .\n{result.content}"
+        )
+    data = result.json()
+    return prep_artist_defaults(data)
+
+
+async def fill_db():
+    for spotify_id in const.INITIAL_IDS:
+        artist = await Artist.get_or_none(spotify_id=spotify_id)
+        if artist is None:
+            defaults = await fetch_artist_data_from_spotify(spotify_id)
+            await Artist.create(**defaults, spotify_id=spotify_id)

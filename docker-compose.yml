@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/usr/src/spotifast
+      - ./src/spotifast:/usr/src/spotifast
     ports:
       - "8000:8000"
     depends_on:

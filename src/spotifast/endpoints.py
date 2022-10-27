@@ -10,7 +10,7 @@ from tortoise.contrib.fastapi import HTTPNotFoundError
 
 from . import const
 from .models import Artist, ArtistFetch, ArtistP, ArtistResponse
-from .utils import get_auth_headers, prep_artist_defaults
+from .utils import fetch_artist_data_from_spotify, fill_db, get_auth_headers
 
 CURRENT_DIR = Path(__file__).parent
 
@@ -24,7 +24,8 @@ class Status(BaseModel):
 
 @router.get("/")
 async def main_page():
-    # show basic interface
+    # fill db on first entry
+    await fill_db()
     afile = await anyio.open_file(CURRENT_DIR / "templates/base.html")
     output = await afile.read()
     return HTMLResponse(content=output)
@@ -57,16 +58,7 @@ async def fetch_artist(artist: ArtistFetch):
     Fetch Artist data from Spotify. You can take the spotify_id from Search.
     """
     spotify_id = artist.spotify_id
-    client = httpx.AsyncClient()
-    url = f"{const.ARTISTS_URL}{spotify_id}"
-    headers = await get_auth_headers()
-    result = await client.get(url=url, headers=headers)
-    if result.status_code != 200:
-        raise HTTPException(
-            status_code=404, detail=f"Artist {spotify_id} not found .\n{result.content}"
-        )
-    data = result.json()
-    defaults = prep_artist_defaults(data)
+    defaults = await fetch_artist_data_from_spotify(spotify_id)
     artist, created = await Artist.get_or_create(
         spotify_id=spotify_id, defaults=defaults
     )
